@@ -20,7 +20,9 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about Next.js, take a look at the following resources:G
+I Dr.George also use the persons channel below to learn some important concept in NextJs
 
 - [Lama Dev Youtube Channel](https://youtube.com/lamadev) 
 - [Next.js](https://nextjs.org/learn)
+- 

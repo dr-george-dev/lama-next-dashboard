@@ -1,6 +1,6 @@
-import Announcement from "@/components/Announcement";
-import BigCalendar from "@/components/BigCalander";
-import Performance from "@/components/Performance";
+import Announcement from "@/app/components/Announcement";
+import BigCalendar from "@/app/components/BigCalander";
+import Performance from "@/app/components/Performance";
 import Image from "next/image";
 import Link from "next/link";
 

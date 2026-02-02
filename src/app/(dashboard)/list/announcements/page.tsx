@@ -1,7 +1,7 @@
-import FormModal from "@/components/FormModal";
-import Pagination from "@/components/Pagination";
-import Table from "@/components/Table";
-import TableSeach from "@/components/TableSeach";
+import FormModal from "@/app/components/FormModal";
+import Pagination from "@/app/components/Pagination";
+import Table from "@/app/components/Table";
+import TableSeach from "@/app/components/TableSeach";
 import { announcementsData, eventsData, role } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";

@@ -7,10 +7,13 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Class,
+  Prisma,
   Subject,
   Teacher,
 } from "../../../../../generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { ITEM_PER_PAGE } from "@/lib/settings";
+import { use } from "react";
 
 type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
@@ -70,7 +73,7 @@ const renderRow = (item: TeacherList) => (
       {item.subjects.map((subject) => subject.name).join(", ")}
     </td>
     <td className="hidden md:table-cell p-4">
-      {item.classes.map((classItem) => classItem.name)}
+      {item.classes.map((classItem) => classItem.name).join(", ")}
     </td>
     <td className="hidden lg:table-cell p-4">{item.phone}</td>
     <td className="hidden lg:table-cell p-4">{item.address}</td>
@@ -89,15 +92,51 @@ const renderRow = (item: TeacherList) => (
     </td>
   </>
 );
-const TeacherListPage = async () => {
-  const data = await prisma.teacher.findMany({
-    include: {
-      subjects: true,
-      classes: true,
-    },
-  });
+const TeacherListPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) => {
+  const resolvedSearchParams = await searchParams;
 
-  console.log(data);
+  const { page, ...queryParams } = resolvedSearchParams;
+
+  const p = page ? parseInt(page) : 1;
+
+  // URL PARAMS CONDITION
+
+  const query: Prisma.TeacherWhereInput = {}
+
+if (queryParams){
+  for(const [key,value] of Object.entries(queryParams)){
+    if(value !== undefined) {;
+    switch(key){
+      case "classId": {
+        query.lessons = {
+          some: {
+            classId: parseInt(value),
+          },
+        };
+      }
+    }
+  }
+}
+}
+
+  const [data, count] = await prisma.$transaction([
+    prisma.teacher.findMany({
+      where: query, 
+      include: {
+        subjects: true,
+        classes: true,
+      },
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (p - 1),
+    }),
+    prisma.teacher.count({where: query }),
+  ]);
+
+  // console.log(data);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -125,7 +164,7 @@ const TeacherListPage = async () => {
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
-      <Pagination />
+      <Pagination page={p} count={count} />
     </div>
   );
 };
